@@ -1,3 +1,5 @@
+// touched to force git update
+
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -12,12 +14,6 @@ import { AboutDialog } from '@/components/AboutDialog';
 import { FrequencyModeInfo } from '@/components/FrequencyModeInfo';
 import Image from 'next/image';
 import { Play, Pause, Volume2, VolumeX, Timer, X, ChevronDown, ChevronUp, Info, Music2, Sparkles } from 'lucide-react';
-import { FrequencyCard } from '@/components/FrequencyCard';
-import { FrequencyGrid } from '@/components/FrequencyGrid';
-import { TimerDialog } from '@/components/TimerDialog';
-import { VolumeDialog } from '@/components/VolumeDialog';
-import { PerfectFifthDialog } from '@/components/PerfectFifthDialog';
-import { useAudioStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 
 interface Category {
