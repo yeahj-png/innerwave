@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ComponentProps } from 'react';
 import { Card } from "@/components/ui/card";
 import { Brain, Waves, Activity, Music, Radio, Wind } from "lucide-react";
 import { useTonePlayer } from '@/hooks/useTonePlayer';
