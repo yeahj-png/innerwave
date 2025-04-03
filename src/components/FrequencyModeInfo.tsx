@@ -31,10 +31,12 @@ export function FrequencyModeInfo({ mode }: FrequencyModeInfoProps) {
         </button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-80 p-3 text-sm"
+        className="w-80 p-3"
         onClick={(e) => e.stopPropagation()}
       >
-        {modeDescriptions[mode]}
+        <p className="text-sm text-neutral-400 leading-relaxed tracking-wide">
+          {modeDescriptions[mode]}
+        </p>
       </PopoverContent>
     </Popover>
   );

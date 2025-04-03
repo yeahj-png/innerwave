@@ -398,23 +398,23 @@ export default function Home() {
         frequency={getCurrentFrequency()} 
       />
       
-      <div className="text-center max-w-xl mx-auto px-4 pt-10 sm:pt-16 pb-6 sm:pb-8">
+      <div className="text-center max-w-xl mx-auto px-4 pt-8 sm:pt-16 pb-4 sm:pb-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center max-w-xl mx-auto"
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-4">
             Innerwave
           </h1>
-          <p className="text-sm text-neutral-400 mt-2 leading-relaxed tracking-wide">
+          <p className="text-sm text-neutral-400 leading-relaxed tracking-wide">
             Step into resonance and choose a sound to center, awaken, or expand.
           </p>
         </motion.div>
       </div>
       
-      <div className="w-full space-y-6 relative z-10 pt-6 pb-20">
+      <div className="w-full space-y-6 relative z-10 pt-4 sm:pt-6 pb-32">
         {/* Category Header when collapsed */}
         <AnimatePresence>
           {!showCategories && selectedCategory && (
@@ -423,13 +423,13 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="flex items-center justify-between mb-2 px-4"
+              className="flex items-center justify-between mb-4 px-4"
             >
               <div className="flex items-center gap-3">
                 {categories.find(c => c.id === selectedCategory)?.icon && (
-                  <div className="p-2 bg-neutral-700 rounded-lg">
+                  <div className="p-2.5 bg-neutral-700 rounded-lg">
                     {React.createElement(categories.find(c => c.id === selectedCategory)!.icon, {
-                      className: "w-5 h-5"
+                      className: "w-6 h-6"
                     })}
                   </div>
                 )}
@@ -439,7 +439,7 @@ export default function Home() {
               </div>
               <button
                 onClick={() => setShowCategories(true)}
-                className="text-sm text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
+                className="min-h-[44px] px-4 text-sm text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
               >
                 Change
               </button>
@@ -458,7 +458,7 @@ export default function Home() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="overflow-hidden"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4 max-w-screen-md mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 px-4 max-w-screen-md mx-auto">
             {categories.map((category) => {
               const Icon = category.icon;
               const isSelected = selectedCategory === category.id;
@@ -466,23 +466,23 @@ export default function Home() {
               return (
                 <Card
                   key={category.id}
-                  className={`p-4 sm:p-5 bg-neutral-800 hover:bg-neutral-700/80 transition-all duration-200 cursor-pointer rounded-xl ${
+                  className={`p-4 sm:p-5 min-h-[88px] bg-neutral-800 hover:bg-neutral-700/80 transition-all duration-200 cursor-pointer rounded-xl ${
                     isSelected ? 'ring-1 ring-indigo-500 bg-indigo-500/5' : 'ring-0 hover:ring-1 hover:ring-neutral-600'
                   }`}
                   onClick={() => handleCategorySelect(category.id)}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="p-2 bg-neutral-700 rounded-lg cursor-default">
+                    <div className="p-2.5 bg-neutral-700 rounded-lg cursor-default">
                       <Icon className="w-6 h-6" />
                     </div>
                     <div className="flex-grow">
                       <div className="flex items-center justify-between">
-                        <h2 className="font-medium text-base md:text-lg">{category.title}</h2>
+                        <h2 className="text-base md:text-lg font-semibold">{category.title}</h2>
                         <div className="cursor-default">
                           <FrequencyModeInfo mode={category.id} />
                         </div>
                       </div>
-                      <p className="text-sm text-neutral-400 mt-1 leading-relaxed tracking-wide">{category.description}</p>
+                      <p className="text-sm text-neutral-400 mt-2 leading-relaxed tracking-wide">{category.description}</p>
                     </div>
                   </div>
                 </Card>
@@ -501,19 +501,19 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-4 max-w-screen-md mx-auto"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 px-4 max-w-screen-md mx-auto"
             >
               {frequencies.map((freq) => (
                 <Card
                   key={freq.id}
-                  className={`p-4 sm:p-5 bg-neutral-800 hover:bg-neutral-700/80 transition-all duration-200 cursor-pointer rounded-xl ${
+                  className={`p-4 sm:p-5 min-h-[88px] bg-neutral-800 hover:bg-neutral-700/80 transition-all duration-200 cursor-pointer rounded-xl ${
                     selectedFrequency === freq.id
                       ? 'ring-1 ring-indigo-500 bg-indigo-500/5'
                       : 'ring-0 hover:ring-1 hover:ring-neutral-600'
                   }`}
                   onClick={() => handleFrequencySelect(freq.id)}
                 >
-                  <h3 className="text-sm font-semibold mb-1">{freq.label}</h3>
+                  <h3 className="text-base font-semibold mb-2">{freq.label}</h3>
                   <p className="text-sm text-neutral-400 leading-relaxed tracking-wide">{freq.description}</p>
                 </Card>
               ))}
@@ -531,7 +531,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="w-full max-w-screen-md mx-auto px-4 mt-6 mb-2"
+            className="w-full max-w-screen-md mx-auto px-4 mt-6 mb-4"
           >
             <div className="w-full py-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-center">
               <p className="text-sm text-indigo-200 leading-relaxed">

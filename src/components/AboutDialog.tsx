@@ -6,50 +6,58 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Info } from "lucide-react";
 
-export function AboutDialog() {
+interface AboutDialogProps {
+  children?: React.ReactNode;
+}
+
+export function AboutDialog({ children }: AboutDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="fixed top-4 right-4 p-2 rounded-full hover:bg-neutral-800 transition-colors z-50">
-          <Info className="w-5 h-5 text-neutral-400 hover:text-neutral-300" />
-        </button>
+        {children}
       </DialogTrigger>
-      <DialogContent className="bg-neutral-900 border border-neutral-700 rounded-xl shadow-lg p-6 max-w-md mx-auto data-[state=open]:animate-fadeIn">
+      <DialogContent className="bg-neutral-900 border border-neutral-800 rounded-xl shadow-lg p-6 max-w-lg mx-auto overflow-y-auto max-h-[90vh] animate-in fade-in-0 duration-300 data-[state=closed]:animate-out data-[state=closed]:fade-out-0">
         <DialogHeader>
-          <DialogTitle>About Innerwave</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">About Innerwave</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          <DialogDescription>
-            Welcome to Innerwave, a modern web application for exploring brainwave entrainment and sound therapy. This app offers various types of audio frequencies designed to help with meditation, focus, relaxation, and other cognitive states.
+        <div className="space-y-6">
+          <DialogDescription className="text-sm text-neutral-400 leading-relaxed">
+            Innerwave is a modern meditation tool designed to help you explore sound, frequency, and states of mind. It offers a curated library of brainwave entrainment audio, from deep theta meditations to energizing beta session,  all accessible in a clean, intuitive interface.
           </DialogDescription>
 
-          <div className="space-y-2">
-            <h3 className="font-medium text-neutral-200">Features:</h3>
-            <ul className="list-disc pl-4 space-y-1">
-              <li>Multiple frequency types (Binaural, Isochronic, Monaural)</li>
-              <li>Solfeggio healing frequencies</li>
-              <li>Schumann resonance presets</li>
-              <li>Perfect fifth harmonics</li>
-              <li>Timer functionality</li>
-              <li>Volume control</li>
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-neutral-200">🔮 What's Inside</h2>
+            <ul className="list-none space-y-2 text-sm text-neutral-400 leading-relaxed">
+              <li>• Binaural, Isochronic & Monaural beat generators</li>
+              <li>• Ancient Solfeggio healing frequencies</li>
+              <li>• Earth's natural Schumann resonance</li>
+              <li>• Optional perfect 5th harmonic overlay</li>
+              <li>• Built-in timer & volume controls</li>
             </ul>
-          </div>
+          </section>
 
-          <div className="space-y-2">
-            <h3 className="font-medium text-neutral-200">Usage Tips:</h3>
-            <ul className="list-disc pl-4 space-y-1">
-              <li>Use stereo headphones for binaural beats</li>
-              <li>Start with alpha frequencies (8-12 Hz) for relaxation</li>
-              <li>Try theta frequencies (4-8 Hz) for meditation</li>
-              <li>Experiment with different durations and volumes</li>
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-neutral-200">🎧 How to Use</h2>
+            <ul className="list-none space-y-2 text-sm text-neutral-400 leading-relaxed">
+              <li>• Use stereo headphones for binaural beats (required for effect)</li>
+              <li>• Start slow with low volume. Let your nervous system guide your experience</li>
             </ul>
-          </div>
+          </section>
 
-          <p className="text-sm text-neutral-400">
-            Built with Next.js, React, and Web Audio API. For educational and experimental purposes only.
-          </p>
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-neutral-200">⚠️ Disclaimer</h2>
+            <p className="text-sm text-neutral-400 leading-relaxed">
+              Innerwave is a digital tool for exploration, education, and entertainment only. It is not a medical device, and does not claim to treat or cure any condition. If you have a history of seizures, epilepsy, or neurological sensitivity, consult a medical professional before using frequency-based audio.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-neutral-200">🛠️ Built With</h2>
+            <p className="text-sm text-neutral-400 leading-relaxed">
+              Next.js, React, Tailwind CSS, and Tone.js
+            </p>
+          </section>
         </div>
       </DialogContent>
     </Dialog>

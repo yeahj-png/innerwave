@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Clock } from "lucide-react";
+import { Timer } from "lucide-react";
 
 interface TimerDialogProps {
   selectedTimer: number | null;
@@ -20,20 +20,23 @@ export function TimerDialog({ selectedTimer, onTimerSelect }: TimerDialogProps) 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={`relative h-9 w-9 rounded-full transition-all duration-200 flex-shrink-0 ${
-            selectedTimer ? 'text-indigo-400 bg-indigo-500/10' : 'text-neutral-400 hover:text-neutral-200'
-          }`}
-        >
-          <Clock className="h-4 w-4" />
-          {selectedTimer && (
-            <span className="absolute -top-1 -right-1 text-xs bg-indigo-600 rounded-full px-1.5 py-0.5">
-              {selectedTimer}m
-            </span>
-          )}
-        </Button>
+        <div className="flex flex-col items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className={`relative h-9 w-9 rounded-full transition-all duration-200 flex-shrink-0 ${
+              selectedTimer ? 'text-indigo-400 bg-indigo-500/10' : 'text-neutral-400 hover:text-neutral-200'
+            }`}
+          >
+            <Timer className="h-4 w-4" />
+            {selectedTimer && (
+              <span className="absolute -top-1 -right-1 text-xs bg-indigo-600 rounded-full px-1.5 py-0.5">
+                {selectedTimer}m
+              </span>
+            )}
+          </Button>
+          <span className="text-xs text-neutral-500 text-center mt-1">Timer</span>
+        </div>
       </DialogTrigger>
       <DialogContent className="w-48 p-2">
         <DialogHeader>

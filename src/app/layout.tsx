@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { FeedbackButton } from "@/components/FeedbackButton";
+import { InfoButton } from "@/components/InfoButton";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -53,17 +55,6 @@ export const metadata: Metadata = {
   }
 };
 
-function FeedbackButton() {
-  return (
-    <a
-      href="mailto:galleryjonai@gmail.com"
-      className="fixed top-4 right-4 text-sm text-neutral-400 hover:text-white hover:underline transition z-50"
-    >
-      Feedback
-    </a>
-  );
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -78,7 +69,16 @@ export default function RootLayout({
       <body
         className={`${geist.className} bg-neutral-900 text-neutral-100 min-h-screen relative antialiased`}
       >
-        <FeedbackButton />
+        {/* Info Button */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-50">
+          <InfoButton />
+        </div>
+
+        {/* Feedback Button */}
+        <div className="fixed top-4 right-4 z-50">
+          <FeedbackButton />
+        </div>
+
         <main className="mx-auto max-w-screen-md px-4 pt-8 md:pt-12 pb-40">
           {children}
         </main>
