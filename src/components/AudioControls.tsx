@@ -53,12 +53,10 @@ export function AudioControls({
   const [perfectFifth, setPerfectFifth] = useState(false);
 
   // Handle volume change
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
+  const handleVolumeChange = (values: number[]) => {
+    const newVolume = values[0];
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
+    onVolumeChange(newVolume / 100);
   };
 
   // Handle perfect fifth toggle
@@ -79,7 +77,7 @@ export function AudioControls({
     <>
       {/* Current frequency display */}
       {selectedFrequency && (
-        <div className="fixed bottom-[8.5rem] sm:bottom-[4.5rem] left-0 w-full bg-neutral-900/95 backdrop-blur-sm text-center py-2 text-sm text-neutral-400 border-t border-neutral-700/50 z-40">
+        <div className="fixed bottom-20 left-0 w-full bg-neutral-900/95 backdrop-blur-sm text-center py-2 text-sm text-neutral-400 border-t border-neutral-800/50 z-40">
           Playing {selectedFrequency.label}
           {timeRemaining && (
             <span className="ml-2 text-indigo-400">
@@ -90,41 +88,36 @@ export function AudioControls({
       )}
 
       {/* Audio Controls Bar */}
-      <div className="fixed bottom-0 w-full z-50 bg-neutral-900 border-t border-neutral-800 shadow-inner">
-        {/* Aesthetic glow effect */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-indigo-500/10 blur-md" />
-        
-        <div className="p-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-3xl mx-auto">
-            {/* Row 1: Play Button */}
-            <div className="flex justify-center sm:justify-start">
-              <Button
-                variant="default"
-                size="icon"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg h-14 w-14 transition-all duration-300"
-                onClick={onPlayPause}
-              >
-                {isPlaying ? (
-                  <Pause className="h-6 w-6" />
-                ) : (
-                  <Play className="h-6 w-6 ml-0.5" />
-                )}
-              </Button>
-            </div>
+      <div className="fixed bottom-0 left-0 w-full z-50 bg-neutral-900 border-t border-neutral-800 shadow-inner">
+        <div className="max-w-screen-md mx-auto px-4 py-4">
+          <div className="flex items-center gap-6">
+            {/* Play Button */}
+            <Button
+              variant="default"
+              size="icon"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg h-12 w-12 flex-shrink-0 transition-all duration-300"
+              onClick={onPlayPause}
+            >
+              {isPlaying ? (
+                <Pause className="h-5 w-5" />
+              ) : (
+                <Play className="h-5 w-5 ml-0.5" />
+              )}
+            </Button>
 
-            {/* Row 2: Controls */}
-            <div className="flex justify-between items-center gap-4">
+            {/* Controls Group */}
+            <div className="flex items-center gap-6 flex-1 min-w-0">
               {/* Timer */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className={`relative h-10 w-10 rounded-full transition-all duration-200 ${
+                    className={`relative h-9 w-9 rounded-full transition-all duration-200 flex-shrink-0 ${
                       timeRemaining ? 'text-indigo-400 bg-indigo-500/10' : 'text-neutral-400 hover:text-neutral-200'
                     }`}
                   >
-                    <Clock className="h-5 w-5" />
+                    <Clock className="h-4 w-4" />
                     {timeRemaining && (
                       <span className="absolute -top-1 -right-1 text-xs bg-indigo-600 rounded-full px-1.5 py-0.5">
                         {formatTimeRemaining()}
@@ -138,7 +131,7 @@ export function AudioControls({
                       <Button
                         key={mins}
                         variant={selectedTimer === mins ? "default" : "outline"}
-                        className="w-full h-10 text-sm transition-colors duration-200"
+                        className="w-full h-9 text-sm transition-colors duration-200"
                         onClick={() => onTimerSelect(selectedTimer === mins ? null : mins)}
                       >
                         {mins}m
@@ -149,20 +142,18 @@ export function AudioControls({
               </Popover>
 
               {/* Volume Slider */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 flex-1 min-w-[140px]">
+                <Volume2 className="h-4 w-4 text-neutral-300 flex-shrink-0" />
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="flex items-center gap-3 min-w-[140px]">
-                        <Volume2 className="h-5 w-5 text-neutral-300 shrink-0" />
-                        <Slider
-                          value={[volume]}
-                          onValueChange={handleVolumeChange}
-                          max={100}
-                          step={1}
-                          className="relative flex items-center select-none touch-none w-full [&>[data-thumb]]:h-4 [&>[data-thumb]]:w-4 [&>[data-thumb]]:border-2 [&>[data-thumb]]:border-indigo-500 [&>[data-thumb]]:bg-white [&>[data-thumb]]:rounded-full [&>[data-track]]:h-1.5 [&>[data-track]]:bg-neutral-600 [&>[data-range]]:bg-indigo-500"
-                        />
-                      </div>
+                      <Slider
+                        value={[volume]}
+                        onValueChange={handleVolumeChange}
+                        max={100}
+                        step={1}
+                        className="relative flex items-center select-none touch-none w-full [&>[data-thumb]]:h-4 [&>[data-thumb]]:w-4 [&>[data-thumb]]:border-2 [&>[data-thumb]]:border-indigo-500 [&>[data-thumb]]:bg-white [&>[data-thumb]]:rounded-full [&>[data-track]]:h-1.5 [&>[data-track]]:bg-neutral-600 [&>[data-range]]:bg-indigo-500"
+                      />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="text-xs font-medium">Volume: {volume}%</p>
@@ -173,7 +164,7 @@ export function AudioControls({
 
               {/* Perfect Fifth Toggle */}
               {selectedCategory === 'solfeggio' && (
-                <div className="flex items-center gap-2 pl-2 border-l border-neutral-700">
+                <div className="flex items-center gap-2">
                   <span className="text-sm text-neutral-400">5th</span>
                   <Switch
                     checked={perfectFifth}
