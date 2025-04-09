@@ -19,9 +19,13 @@ interface CurrentToneState {
   isIsochronic?: boolean;
 }
 
-const FADE_DURATION = 0.1; // 100ms fade in/out
-const CARRIER_FREQUENCY = 400; // Base carrier frequency for isochronic tones
-const NOISE_BUFFER_SIZE = 44100 * 2; // 2 seconds of audio at 44.1kHz
+const FADE_DURATION = 0.25; // Increased from 0.1 to 0.25 for smoother transitions
+const CARRIER_FREQUENCY = 400;
+const NOISE_BUFFER_SIZE = 44100; // Reduced to 1 second for better mobile performance
+const BUFFER_SIZE = 4096; // Added optimal buffer size for mobile
+
+// Add platform detection
+const isMobile = typeof window !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 export function useTonePlayer() {
   // Use refs to persist audio context and nodes between renders
@@ -36,13 +40,24 @@ export function useTonePlayer() {
   const isochronicIntervalRef = useRef<number | null>(null);
   const previousFrequencyRef = useRef<CurrentToneState | null>(null);
 
-  // Initialize or get audio context
+  // Initialize or get audio context with mobile optimizations
   const getAudioContext = useCallback(() => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext();
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      audioContextRef.current = new AudioContext({
+        // Optimize latency for mobile
+        latencyHint: isMobile ? 'playback' : 'interactive',
+        sampleRate: isMobile ? 44100 : 48000, // Lower sample rate on mobile
+      });
+      
       masterGainRef.current = audioContextRef.current.createGain();
       masterGainRef.current.connect(audioContextRef.current.destination);
       masterGainRef.current.gain.value = volumeRef.current;
+      
+      // Resume audio context if suspended (mobile requirement)
+      if (audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
     }
     return audioContextRef.current;
   }, []);
@@ -169,32 +184,38 @@ export function useTonePlayer() {
     // Store current state before cleanup
     previousFrequencyRef.current = currentToneRef.current;
 
-    // Fade out all oscillators
+    // Fade out all oscillators with smoother transitions
     const currentTime = ctx.currentTime;
+    const actualFadeDuration = isMobile ? fadeDuration * 1.5 : fadeDuration;
+    
     [...mainOscillatorsRef.current, ...fifthOscillatorsRef.current].forEach(({ gain }) => {
-      gain.gain.setValueAtTime(gain.gain.value, currentTime);
-      gain.gain.linearRampToValueAtTime(0, currentTime + fadeDuration);
+      const currentGain = gain.gain.value;
+      gain.gain.setValueAtTime(currentGain, currentTime);
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001, // Avoid zero for exponential ramp
+        currentTime + actualFadeDuration
+      );
     });
 
-    // Clean up after fade
+    // Clean up after fade with longer delay on mobile
     setTimeout(() => {
       cleanupOscillators(mainOscillatorsRef.current);
       cleanupOscillators(fifthOscillatorsRef.current);
       mainOscillatorsRef.current = [];
       fifthOscillatorsRef.current = [];
-    }, fadeDuration * 1100);
+    }, actualFadeDuration * 1100);
     
     // Cleanup noise with fade
     if (noiseNodeRef.current) {
       const { gain, bufferSource } = noiseNodeRef.current;
       gain.gain.setValueAtTime(gain.gain.value, currentTime);
-      gain.gain.linearRampToValueAtTime(0, currentTime + fadeDuration);
+      gain.gain.linearRampToValueAtTime(0, currentTime + actualFadeDuration);
       
       setTimeout(() => {
         bufferSource.stop();
         bufferSource.disconnect();
         gain.disconnect();
-      }, fadeDuration * 1100);
+      }, actualFadeDuration * 1100);
       
       noiseNodeRef.current = null;
     }
@@ -214,8 +235,12 @@ export function useTonePlayer() {
     const oscillatorGain = ctx.createGain();
     let panner: StereoPannerNode | undefined;
     
+    // Set oscillator properties
     oscillator.type = 'sine';
-    oscillator.frequency.value = freq;
+    
+    // Use exponential ramp for frequency changes (smoother on mobile)
+    const now = ctx.currentTime;
+    oscillator.frequency.setValueAtTime(freq, now);
     
     // Add stereo panning if needed
     if (pan !== 0) {
@@ -227,11 +252,12 @@ export function useTonePlayer() {
       oscillator.connect(oscillatorGain);
     }
     
-    // Start with 0 gain and ramp up
-    oscillatorGain.gain.setValueAtTime(0, ctx.currentTime);
-    oscillatorGain.gain.linearRampToValueAtTime(
-      initialGain * volumeRef.current,
-      ctx.currentTime + FADE_DURATION
+    // Smoother gain transitions for mobile
+    const fadeTime = isMobile ? FADE_DURATION * 1.5 : FADE_DURATION;
+    oscillatorGain.gain.setValueAtTime(0, now);
+    oscillatorGain.gain.exponentialRampToValueAtTime(
+      Math.max(0.0001, initialGain * volumeRef.current),
+      now + fadeTime
     );
     
     oscillatorGain.connect(masterGainRef.current!);
